@@ -16,6 +16,7 @@ let
 
   # Wrap callPackage with the default non-Haskell directories.
   normalPackage = p: callPackage (normalProjectDir + p) {};
+  normalPackage32 = p: callPackage_i686 (normalProjectDir + p) {};
   normalPackageS = s: p: s.callPackage (normalProjectDir + p) {};
   normalPackageC = s: p: v: s.callPackage (normalProjectDir + p) v;
 
@@ -42,6 +43,7 @@ in
   ownHaskellPackages = ver : recurseIntoAttrs (ver.override {
     extension = se : su : rec {
 
+<<<<<<< HEAD
       # cabal2nix         = normalPackageS se "cabal2nix";
       # krpc              = normalPackageS se "krpc";
       # intset            = haskellPackage se "intset";
@@ -62,17 +64,20 @@ in
       # hask              = haskellPackage se "hask";
       # bittorrent        = normalPackageS se "bittorrent";
       # gtk3hs            = haskellPackage se "gtk3";
-      # ghcMod_5_0_1      = haskellPackage se "ghc-mod/5.0.1.nix";
+      # ghcMod_5_0_1_1    = haskellPackage se "ghc-mod/5.0.1.1.nix";
       # djinnLib          = haskellPackage se "djinn-lib";
       # djinnGhc          = haskellPackage se "djinn-ghc";
       # monadJournal      = haskellPackage se "monad-journal";
       # yiMonokai         = normalPackageS se "yi-monokai";
-      # yiHaskellUtils    = normalPackageC se "yi-haskell-utils" { ghcMod = ghcMod_5_0_1; };
+      # yiHaskellUtils    = normalPackageC se "yi-haskell-utils" { ghcMod = ghcMod_5_0_1_1; };
       # customisedYi      = normalPackageS se "customised-yi";
       lens              = haskellPackage se "lens";
       # lensAeson         = haskellPackage se "lens-aeson";
       # tsuntsun          = normalPackageS se "tsuntsun";
-      wordTrie          = fixSrcRoot (normalPackageS se "word-trie") "yi-editor/word-trie";
+      # wordTrie          = fixSrcRoot (normalPackageS se "word-trie") "yi-editor/word-trie";
+      # ooPrototypes      = normalPackageS se "oo-prototypes";
+      # yiLanguage        = normalPackageS se "yi-language";
+      # yiCustom          = normalPackageS se "customised-yi";
     };
   });
 
