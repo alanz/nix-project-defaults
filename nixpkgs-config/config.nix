@@ -3,8 +3,12 @@
 with pkgs;
 let
   # Directories where I'll store extra packages.
-  normalProjectDir = "/home/shana/programming/nix-project-defaults/";
+  homeDir = "/home/alanz/";
+  programmingRootDir = homeDir + "mysrc/github/";
+  programmingDir     = homeDir + "mysrc/github/alanz/";
+  normalProjectDir = programmingDir + "nix-project-defaults/";
   haskellProjectDir = normalProjectDir + "haskell-tmp-defaults/";
+  ghcDir = homeDir + "mysrc/git.haskell.org/ghc";
 
   # Wrap callPackage with the default Haskell directories.
   haskellPackage = s: p: s.callPackage (haskellProjectDir + p) {};
@@ -14,12 +18,16 @@ let
   normalPackage = p: callPackage (normalProjectDir + p) {};
   normalPackageS = s: p: s.callPackage (normalProjectDir + p) {};
   normalPackageC = s: p: v: s.callPackage (normalProjectDir + p) v;
+
+  fixSrc     = p: dir: pkgs.lib.overrideDerivation p (attrs: { src = programmingDir + dir; });
+  fixSrcRoot = p: dir: pkgs.lib.overrideDerivation p (attrs: { src = programmingRootDir + dir; });
 in
 { packageOverrides = self: rec {
 
   # Define own GHC HEAD package pointing to local checkout.
   packages_ghcHEAD = self.haskell.packages {
-    ghcPath = /home/shana/programming/ghc;
+    # ghcPath = /home/shana/programming/ghc;
+    ghcPath = ghcDir;
     ghcBinary = self.haskellPackages.ghcPlain;
     prefFun = self.haskell.ghcHEADPrefs;
   };
@@ -34,36 +42,37 @@ in
   ownHaskellPackages = ver : recurseIntoAttrs (ver.override {
     extension = se : su : rec {
 
-      cabal2nix         = normalPackageS se "cabal2nix";
-      krpc              = normalPackageS se "krpc";
-      intset            = haskellPackage se "intset";
-      prettyClass       = haskellPackage se "pretty-class";
-      splitChannel      = haskellPackage se "split-channel";
-      bitsExtras        = haskellPackage se "bits-extras";
-      base32Bytestring  = haskellPackage se "base32-bytestring";
-      cryptohash_0_10_0 = haskellPackage se "cryptohash/0.10.0.nix";
-      cryptohash        = haskellPackage se "cryptohash";
-      haskoin           = haskellPackage se "haskoin";
-      haddock           = normalPackageS se "haddock";
-      haddockLibrary    = normalPackageS se "haddock-library";
-      haddockApi        = normalPackageS se "haddock-api";
-      PastePipe         = haskellPackage se "PastePipe";
-      yi                = normalPackageS se "yi";
-      yiContrib         = normalPackageS se "yi-contrib";
-      hask              = haskellPackage se "hask";
-      bittorrent        = normalPackageS se "bittorrent";
-      gtk3hs            = haskellPackage se "gtk3";
-      ghcMod_5_0_1      = haskellPackage se "ghc-mod/5.0.1.nix";
-      djinnLib          = haskellPackage se "djinn-lib";
-      djinnGhc          = haskellPackage se "djinn-ghc";
-      monadJournal      = haskellPackage se "monad-journal";
-      yiMonokai         = normalPackageS se "yi-monokai";
-      yiHaskellUtils    = normalPackageC se "yi-haskell-utils" { ghcMod = ghcMod_5_0_1; };
-      customisedYi      = normalPackageS se "customised-yi";
+      # cabal2nix         = normalPackageS se "cabal2nix";
+      # krpc              = normalPackageS se "krpc";
+      # intset            = haskellPackage se "intset";
+      # prettyClass       = haskellPackage se "pretty-class";
+      # splitChannel      = haskellPackage se "split-channel";
+      # bitsExtras        = haskellPackage se "bits-extras";
+      # base32Bytestring  = haskellPackage se "base32-bytestring";
+      # cryptohash_0_10_0 = haskellPackage se "cryptohash/0.10.0.nix";
+      # cryptohash        = haskellPackage se "cryptohash";
+      # haskoin           = haskellPackage se "haskoin";
+      # haddock           = normalPackageS se "haddock";
+      # haddockLibrary    = normalPackageS se "haddock-library";
+      # haddockApi        = normalPackageS se "haddock-api";
+      # PastePipe         = haskellPackage se "PastePipe";
+      yi                = fixSrc (normalPackageS se "yi") "yi/yi";
+      # yi                = normalPackageS se "yi";
+      yiContrib         = fixSrc (normalPackageS se "yi-contrib") "yi/yi-contrib";
+      # hask              = haskellPackage se "hask";
+      # bittorrent        = normalPackageS se "bittorrent";
+      # gtk3hs            = haskellPackage se "gtk3";
+      # ghcMod_5_0_1      = haskellPackage se "ghc-mod/5.0.1.nix";
+      # djinnLib          = haskellPackage se "djinn-lib";
+      # djinnGhc          = haskellPackage se "djinn-ghc";
+      # monadJournal      = haskellPackage se "monad-journal";
+      # yiMonokai         = normalPackageS se "yi-monokai";
+      # yiHaskellUtils    = normalPackageC se "yi-haskell-utils" { ghcMod = ghcMod_5_0_1; };
+      # customisedYi      = normalPackageS se "customised-yi";
       lens              = haskellPackage se "lens";
-      lensAeson         = haskellPackage se "lens-aeson";
-      tsuntsun          = normalPackageS se "tsuntsun";
-      wordTrie          = normalPackageS se "word-trie";
+      # lensAeson         = haskellPackage se "lens-aeson";
+      # tsuntsun          = normalPackageS se "tsuntsun";
+      wordTrie          = fixSrcRoot (normalPackageS se "word-trie") "yi-editor/word-trie";
     };
   });
 
@@ -81,5 +90,4 @@ in
   wlc = normalPackage "wlc";
   loliwm = normalPackage "loliwm";
   youtubeDL = normalPackage "youtube-dl";
-
 }; }
