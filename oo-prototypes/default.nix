@@ -3,7 +3,8 @@
 { cabal }:
 let pkgs = import <nixpkgs> {};
     lib = pkgs.lib;
-    file = builtins.readFile /home/shana/programming/oo-prototypes/oo-prototypes.cabal;
+    # file = builtins.readFile /home/shana/programming/oo-prototypes/oo-prototypes.cabal;
+    file = builtins.readFile /home/alanz/mysrc/github/yi-editor/oo-prototypes/oo-prototypes.cabal;
     strs = lib.strings.splitString "\n" file;
     vstr = builtins.head (builtins.filter (s: lib.strings.hasPrefix "version:" s) strs);
     vrsn = lib.strings.removePrefix "version:" (lib.strings.replaceChars [" "] [""] vstr);

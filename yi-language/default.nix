@@ -7,7 +7,8 @@
 
 let pkgs = import <nixpkgs> {};
     lib = pkgs.lib;
-    file = builtins.readFile /home/shana/programming/yi-language/yi-language.cabal;
+    # file = builtins.readFile /home/shana/programming/yi-language/yi-language.cabal;
+    file = builtins.readFile /home/alanz/mysrc/github/yi-editor/yi-language/yi-language.cabal;
     strs = lib.strings.splitString "\n" file;
     vstr = builtins.head (builtins.filter (s: lib.strings.hasPrefix "version:" s) strs);
     vrsn = lib.strings.removePrefix "version:" (lib.strings.replaceChars [" "] [""] vstr);

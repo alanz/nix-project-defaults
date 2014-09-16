@@ -43,7 +43,6 @@ in
   ownHaskellPackages = ver : recurseIntoAttrs (ver.override {
     extension = se : su : rec {
 
-<<<<<<< HEAD
       # cabal2nix         = normalPackageS se "cabal2nix";
       # krpc              = normalPackageS se "krpc";
       # intset            = haskellPackage se "intset";
@@ -74,9 +73,9 @@ in
       lens              = haskellPackage se "lens";
       # lensAeson         = haskellPackage se "lens-aeson";
       # tsuntsun          = normalPackageS se "tsuntsun";
-      # wordTrie          = fixSrcRoot (normalPackageS se "word-trie") "yi-editor/word-trie";
-      # ooPrototypes      = normalPackageS se "oo-prototypes";
-      # yiLanguage        = normalPackageS se "yi-language";
+      wordTrie          = fixSrcRoot (normalPackageS se "word-trie") "yi-editor/word-trie";
+      ooPrototypes      = fixSrcRoot (normalPackageS se "oo-prototypes") "yi-editor/oo-prototypes";
+      yiLanguage        = fixSrcRoot (normalPackageS se "yi-language") "yi-editor/yi-language";
       # yiCustom          = normalPackageS se "customised-yi";
     };
   });

@@ -3,7 +3,8 @@
 { cabal, binary, derive, hspec, QuickCheck }:
 let pkgs = import <nixpkgs> {};
     lib = pkgs.lib;
-    file = builtins.readFile /home/shana/programming/word-trie/word-trie.cabal;
+    # file = builtins.readFile /home/shana/programming/word-trie/word-trie.cabal;
+    file = builtins.readFile /home/alanz/mysrc/github/yi-editor/word-trie/word-trie.cabal;
     strs = lib.strings.splitString "\n" file;
     vstr = builtins.head (builtins.filter (s: lib.strings.hasPrefix "version:" s) strs);
     vrsn = lib.strings.removePrefix "version:" (lib.strings.replaceChars [" "] [""] vstr);
