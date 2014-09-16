@@ -76,12 +76,11 @@ rec {
     firewall.enable = false;
     hostName = "lenalee";
     interfaces = {
-      enp0s25 = { ipAddress = "192.168.1.11"; subnetMask = "255.255.255.0"; };
+      enp0s25 = { ipAddress = "192.168.1.11"; prefixLength = 24; };
     };
     nameservers = [ "192.168.1.254" ];
     useDHCP = false;
   };
-
 
   # Select internationalisation properties.
   i18n = {
@@ -129,12 +128,18 @@ rec {
   services.xserver.displayManager.sessionCommands = ''
     ${pkgs.xlibs.xmodmap}/bin/xmodmap -e "pointer = 3 2 1"
     ${pkgs.xlibs.xsetroot}/bin/xsetroot -cursor_name left_ptr
+    ${pkgs.xlibs.xrandr} --output DVI-I-1 --auto --right-of DVI-D-0
     nitrogen --restore
   '';
 
-  services.redshift.enable = true;
-  services.redshift.latitude = "51";
-  services.redshift.longitude = "-2";
+  services.redshift = {
+    enable = true;
+    latitude = "51";
+    longitude = "-2";
+  };
+
+  # Don't blind me
+  systemd.services.redshift.restartIfChanged = false;
 
   # NFS
   services.nfs.server.enable = true;
@@ -169,7 +174,7 @@ rec {
     cantata = pkgs.lib.overrideDerivation # Local SVN checkout
                  (cantataNixpkgs.override { withQt4 = false; withQt5 = true; })
                  (attrs: rec {
-                    name = "cantata-1.3.54-r5185";
+                    name = "cantata-1.3.54-r5325";
                     src = /home/shana/programming/cantata;
                     unpackPhase = "";
                     sourceRoot = "";

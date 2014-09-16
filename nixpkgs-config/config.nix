@@ -77,6 +77,11 @@ in
       ooPrototypes      = fixSrcRoot (normalPackageS se "oo-prototypes") "yi-editor/oo-prototypes";
       yiLanguage        = fixSrcRoot (normalPackageS se "yi-language") "yi-editor/yi-language";
       # yiCustom          = normalPackageS se "customised-yi";
+      hstorrent         = normalPackageS se "hstorrent";
+      haskellTracker    = normalPackageS se "haskell-tracker";
+      saltine           = haskellPackage se "saltine";
+      yiRope            = normalPackageS se "yi-rope";
+
     };
   });
 
@@ -88,6 +93,7 @@ in
     ownHaskellPackages haskellPackages_ghc783_profiling;
 
   myHaskellPackages = myHaskellPackages_ghc783;
+  myHaskellPackages_profiling = myHaskellPackages_ghc783_profiling;
 
   # Packages that aren't Haskell packages.
 
