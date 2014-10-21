@@ -2,6 +2,8 @@
 
 with pkgs;
 let
+
+  nixpkgsGit = import /home/shana/programming/nixpkgs {};
   # Directories where I'll store extra packages.
   homeDir = "/home/alanz/";
   programmingRootDir = homeDir + "mysrc/github/";
@@ -22,8 +24,13 @@ let
 
   fixSrc     = p: dir: pkgs.lib.overrideDerivation p (attrs: { src = programmingDir + dir; });
   fixSrcRoot = p: dir: pkgs.lib.overrideDerivation p (attrs: { src = programmingRootDir + dir; });
+
+  buildLocally = pk: p: pk.lib.overrideDerivation p (attrs: { buildInputs = []; preferLocalBuild = true; });
+  buildAllLocally = pk: pk.lib.attrsets.mapAttrs (n: v: buildLocally pk v);
+
 in
-{ packageOverrides = self: rec {
+{ ffmpeg.x11grab = true;
+  packageOverrides = self: rec {
 
   # Define own GHC HEAD package pointing to local checkout.
   # packages_ghcHEAD = self.haskell.packages {
@@ -41,7 +48,6 @@ in
   # have the settings I want.
   ownHaskellPackages = ver : recurseIntoAttrs (ver.override {
     extension = se : su : rec {
-
       # cabal2nix         = normalPackageS se "cabal2nix";
       # krpc              = normalPackageS se "krpc";
       # intset            = haskellPackage se "intset";
@@ -84,6 +90,21 @@ in
     };
   });
 
+  # This is similar to ownHaskellPackages except that it uses my local
+  # nixpkgs checkout as a base which means that I don't have to
+  # duplicate some expressions and wait for the channel to catch up.
+  ownHaskellPackagesGit = ver : nixpkgsGit.recurseIntoAttrs (ver.override {
+    extension = se : su : rec {
+      yiHaskellUtils = normalPackageS se "yi-haskell-utils";
+      yiMonokai      = normalPackageS se "yi-monokai";
+      yiCustom       = su.yiCustom.override {
+        extraPackages = p: [ p.yiContrib p.yiMonokai p.yiHaskellUtils p.lens ];
+      };
+
+    };
+  });
+
+
   # Derive package sets for every version of GHC I'm interested in.
   myHaskellPackages_ghc742 = ownHaskellPackages haskellPackages_ghc742;
   myHaskellPackages_ghc763 = ownHaskellPackages haskellPackages_ghc763;
@@ -93,6 +114,9 @@ in
 
   myHaskellPackages = myHaskellPackages_ghc783;
   myHaskellPackages_profiling = myHaskellPackages_ghc783_profiling;
+
+  myHaskellPackages_ghc783_nixpkgs = ownHaskellPackagesGit nixpkgsGit.haskellPackages_ghc783;
+  myHaskellPackages_nixpkgs = myHaskellPackages_ghc783_nixpkgs;
 
   # Packages that aren't Haskell packages.
 

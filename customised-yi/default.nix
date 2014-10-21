@@ -1,10 +1,9 @@
-{ cabal, yiMonokai, yiHaskellUtils, yi, lens, yiContrib }:
+{ cabal, yiMonokai, yiHaskellUtils, yi, lens, yiContrib, ghcMod }:
 let
-  extras = [ yiMonokai lens yiContrib yiHaskellUtils ];
-
+  extras = [ yiMonokai lens yiContrib yiHaskellUtils ghcMod ];
 in
 cabal.mkDerivation (self: rec {
-  pname = "yi-custom";
+  pname = "yi-wrapper";
   version = "0.0.0.1";
   src = "/home/shana/.config/yi";
   isExecutable = true;

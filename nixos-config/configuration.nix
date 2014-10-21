@@ -112,6 +112,8 @@ rec {
     xkbOptions = "compose:caps";
     xkbVariant = "dvp";
 
+    startGnuPGAgent = true;
+
     windowManager.xmonad.enable = true;
     windowManager.xmonad.extraPackages = self: [ self.xmonadContrib ];
     windowManager.default = "xmonad";
@@ -120,17 +122,16 @@ rec {
     displayManager.slim.defaultUser = "shana";
     displayManager.slim.autoLogin = false;
     displayManager.slim.theme = "/home/shana/.slim-theme/slim-theme-r6.tar.gz";
+    displayManager.sessionCommands = ''
+        ${pkgs.xlibs.xmodmap}/bin/xmodmap -e "pointer = 3 2 1"
+        ${pkgs.xlibs.xsetroot}/bin/xsetroot -cursor_name left_ptr
+        ${pkgs.xlibs.xrandr} --output HDMI-0 --mode 1920x1080 --right-of DVI-D-0
+        nitrogen --restore
+      '';
+
   };
 
-  services.xserver.startGnuPGAgent = true;
   programs.ssh.startAgent = false;
-
-  services.xserver.displayManager.sessionCommands = ''
-    ${pkgs.xlibs.xmodmap}/bin/xmodmap -e "pointer = 3 2 1"
-    ${pkgs.xlibs.xsetroot}/bin/xsetroot -cursor_name left_ptr
-    ${pkgs.xlibs.xrandr} --output DVI-I-1 --auto --right-of DVI-D-0
-    nitrogen --restore
-  '';
 
   services.redshift = {
     enable = true;
@@ -170,19 +171,23 @@ rec {
   nixpkgs.config.packageOverrides = self: rec {
 
     # Override Cantata expression to point at local checkout.
-    cantataNixpkgs = self.cantata;
     cantata = pkgs.lib.overrideDerivation # Local SVN checkout
-                 (cantataNixpkgs.override { withQt4 = false; withQt5 = true; })
+                 (self.cantata.override { withQt4 = false; withQt5 = true; })
                  (attrs: rec {
-                    name = "cantata-1.3.54-r5325";
+                    name = "cantata-1.3.54-r5574";
                     src = /home/shana/programming/cantata;
                     unpackPhase = "";
                     sourceRoot = "";
                  });
+
+    emacsEnv = pkgs.buildEnv {
+      name = "emacs-env";
+      paths = [ pkgs.haskellPackages.Agda pkgs.emacs ];
+    };
   };
 
   environment.systemPackages = with pkgs;
-    [ (mpd.override { pulseaudioSupport = false; })
+    [ (callPackage /home/shana/programming/nixpkgs/pkgs/servers/mpd { pulseaudioSupport = false; })
       (mpv.override { pulseSupport = false; })
       PPSSPP
       astyle
@@ -190,7 +195,7 @@ rec {
       cloc
       dwb
       elfutils
-      emacs
+      emacsEnv
       file
       gdb
       gimp
@@ -256,7 +261,6 @@ rec {
   nix.trustedBinaryCaches = [
     "http://hydra.nixos.org"
     "http://cache.nixos.org"
-    "http://hydra.cryp.to"
     "http://yuuki:3000"
   ];
 
@@ -285,7 +289,6 @@ rec {
   services.cron.systemCronJobs = [
       "30 */1 * * * root nix-pull &>/dev/null http://hydra.nixos.org/jobset/nixpkgs/trunk/channel/latest/MANIFEST"
       "20 */1 * * * root nix-pull &>/dev/null http://yuuki:3000/jobset/nixpkgs/trunk/channel/latest/MANIFEST"
-      "40 */2 * * * root nix-pull &>/dev/null http://hydra.cryp.to/jobset/nixpkgs/haskell-updates/channel/latest/MANIFEST"
     ];
 
 }
