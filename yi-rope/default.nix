@@ -7,7 +7,8 @@
 
 let pkgs = import <nixpkgs> {};
     lib = pkgs.lib;
-    sr  = "/home/shana/programming/yi-rope";
+    # sr  = "/home/shana/programming/yi-rope";
+    sr  = "/home/alanz/mysrc/github/yi-editor/yi-rope";
     file = builtins.readFile (sr + "/yi-rope.cabal");
     strs = lib.strings.splitString "\n" file;
     vstr = builtins.head (builtins.filter (s: lib.strings.hasPrefix "version:" s) strs);
@@ -17,7 +18,7 @@ in
 cabal.mkDerivation (self: {
   pname = "yi-rope";
   version = vrsn;
-  src = sr;
+  src = "/home/shana/programming/yi-rope";
   configureFlags = [
     "--ghc-option=-fpedantic-bottoms"
     "--ghc-option=-flate-dmd-anal"

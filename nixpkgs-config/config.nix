@@ -11,13 +11,13 @@ let
   ghcDir = homeDir + "mysrc/git.haskell.org/ghc";
 
   # Wrap callPackage with the default Haskell directories.
-  haskellPackage = s: p: s.callPackage (haskellProjectDir + p) {};
+  haskellPackage  = s: p: s.callPackage (haskellProjectDir + p) {};
   haskellPackageS = s: p: s.callPackage (haskellProjectDir + p);
 
   # Wrap callPackage with the default non-Haskell directories.
-  normalPackage = p: callPackage (normalProjectDir + p) {};
+  normalPackage   = p: callPackage      (normalProjectDir + p) {};
   normalPackage32 = p: callPackage_i686 (normalProjectDir + p) {};
-  normalPackageS = s: p: s.callPackage (normalProjectDir + p) {};
+  normalPackageS = s: p:    s.callPackage (normalProjectDir + p) {};
   normalPackageC = s: p: v: s.callPackage (normalProjectDir + p) v;
 
   fixSrc     = p: dir: pkgs.lib.overrideDerivation p (attrs: { src = programmingDir + dir; });
@@ -26,17 +26,16 @@ in
 { packageOverrides = self: rec {
 
   # Define own GHC HEAD package pointing to local checkout.
-  packages_ghcHEAD = self.haskell.packages {
-    # ghcPath = /home/shana/programming/ghc;
-    ghcPath = ghcDir;
-    ghcBinary = self.haskellPackages.ghcPlain;
-    prefFun = self.haskell.ghcHEADPrefs;
-  };
+  # packages_ghcHEAD = self.haskell.packages {
+  #   ghcPath = ghcDir;
+  #   ghcBinary = self.haskellPackages.ghcPlain;
+  #   prefFun = self.haskell.ghcHEADPrefs;
+  # };
 
-  # Define different GHC HEAD configurations.
-  haskellPackages_ghcHEAD = recurseIntoAttrs packages_ghcHEAD.highPrio;
-  haskellPackages_ghcHEAD_profiling = recurseIntoAttrs packages_ghcHEAD.profiling;
-  haskellPackages_ghcHEAD_no_profiling = recurseIntoAttrs packages_ghcHEAD.noProfiling;
+  # # Define different GHC HEAD configurations.
+  # haskellPackages_ghcHEAD = recurseIntoAttrs packages_ghcHEAD.highPrio;
+  # haskellPackages_ghcHEAD_profiling = recurseIntoAttrs packages_ghcHEAD.profiling;
+  # haskellPackages_ghcHEAD_no_profiling = recurseIntoAttrs packages_ghcHEAD.noProfiling;
 
   # Haskell packages I want to use that reside out of nixpkgs or don't
   # have the settings I want.
@@ -57,9 +56,9 @@ in
       # haddockLibrary    = normalPackageS se "haddock-library";
       # haddockApi        = normalPackageS se "haddock-api";
       # PastePipe         = haskellPackage se "PastePipe";
-      yi                = fixSrc (normalPackageS se "yi") "yi/yi";
+      yi                = fixSrcRoot (normalPackageS se "yi") "yi-editor/yi/yi/";
       # yi                = normalPackageS se "yi";
-      yiContrib         = fixSrc (normalPackageS se "yi-contrib") "yi/yi-contrib";
+   #   yiContrib         = fixSrc (normalPackageS se "yi-contrib") "yi/yi-contrib";
       # hask              = haskellPackage se "hask";
       # bittorrent        = normalPackageS se "bittorrent";
       # gtk3hs            = haskellPackage se "gtk3";
@@ -70,17 +69,17 @@ in
       # yiMonokai         = normalPackageS se "yi-monokai";
       # yiHaskellUtils    = normalPackageC se "yi-haskell-utils" { ghcMod = ghcMod_5_0_1_1; };
       # customisedYi      = normalPackageS se "customised-yi";
-      lens              = haskellPackage se "lens";
+   #   lens              = haskellPackage se "lens";
       # lensAeson         = haskellPackage se "lens-aeson";
       # tsuntsun          = normalPackageS se "tsuntsun";
-      wordTrie          = fixSrcRoot (normalPackageS se "word-trie") "yi-editor/word-trie";
+      wordTrie          = fixSrcRoot (normalPackageS se "word-trie")     "yi-editor/word-trie";
       ooPrototypes      = fixSrcRoot (normalPackageS se "oo-prototypes") "yi-editor/oo-prototypes";
-      yiLanguage        = fixSrcRoot (normalPackageS se "yi-language") "yi-editor/yi-language";
+      yiLanguage        = fixSrcRoot (normalPackageS se "yi-language")   "yi-editor/yi-language";
       # yiCustom          = normalPackageS se "customised-yi";
-      hstorrent         = normalPackageS se "hstorrent";
-      haskellTracker    = normalPackageS se "haskell-tracker";
-      saltine           = haskellPackage se "saltine";
-      yiRope            = normalPackageS se "yi-rope";
+   #   hstorrent         = normalPackageS se "hstorrent";
+   #   haskellTracker    = normalPackageS se "haskell-tracker";
+   #   saltine           = haskellPackage se "saltine";
+      yiRope            = fixSrcRoot (normalPackageS se "yi-rope")  "yi-editor/yi-rope";
 
     };
   });
